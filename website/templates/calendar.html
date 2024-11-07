@@ -1,0 +1,117 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %} 
+
+{% block content%}
+<script type = "text/javascript">
+    
+    js_events = {{events | tojson}}
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('aiCalendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          timeZone: 'local',
+          initialView: 'dayGridMonth',
+          themeSystem: 'bootstrap5',
+          weekNumbers: true,
+          dayMaxEvents: true,
+          headerToolbar: 
+          {
+            left: 'dayGridMonth timeGridWeek timeGridDay list',
+            center: 'title',
+            end: 'prev today next',
+          },
+          events: js_events
+        });
+        calendar.render();
+      });
+</script>
+
+
+<div class = "container-fluid mb-2">
+    <div class="row d-flex justify-content-center mt-2">
+        <div class="col-10">
+            <div id = 'aiCalendar'></div> 
+        </div>
+    </div>
+    
+    <div class="row d-flex justify-content-center mt-2">
+        <div class="col-8 d-flex justify-content-around">
+            <button class = "btn btn-primary showForm" onclick="showForm()">Add Event</button>
+            <button class = "btn btn-danger showForm" onclick="showDelete()">Delete Event</button>
+            <button class = "btn btn-success showForm" onclick="showAI()">Ask AI</button>
+        </div>    
+    </div>
+
+    <div class="row d-flex justify-content-center mt-2">
+        <div class="col-8">
+            <form id = "eventForm" class = "loginForm my-5" method = "POST" style="display: none;">
+                <div class = "mb-4">
+                    <label for = "Activity Name" class = "form-label">Activity name</label>
+                    <input type="text" class = "form-control" id = "actName" name = "actName" placeholder = "Math Class">
+                </div>
+                <div class = "mb-4">
+                    <label for = "time" class = "form-label">Start Time and Date</label>
+                    <input type="datetime-local" class = "form-control" id = "timestart" name = "timestart">
+                </div>
+                <div class = "mb-4">
+                    <label for = "time" class = "form-label">End Time and Date</label>
+                    <input type="datetime-local" class = "form-control" id = "timeend" name = "timeend">
+                </div>
+                <div class = "mb-4">
+                    <label for = "priority" class = "form-label">Priority</label>
+                    <select class = "form-control" name = "priority" id = "priority">
+                        <option value = "select">Select a Priority Type</option>
+                        <option value = "High">High</option>
+                        <option value = "Medium">Medium</option>
+                        <option value = "Low">Low</option>
+                    </select>
+                </div>
+                <div class = "mb-4">
+                    <label for = "mobility" class = "form-label">Is the event movable?</label>
+                    <select class = "form-control" name = "mobility" id = "mobility">
+                        <option value = "select">Select if event is movable</option>
+                        <option value = "Yes">Yes</option>
+                        <option value = "No">No</option>
+                    </select>
+                </div>
+                
+                <button type = "submit" class="btn btn-primary form-control">Submit</button> 
+               
+                
+            </form>
+        </div>
+
+        <div class="col-8">
+            <form id = "deleteForm" class = "loginForm my-5" action = "/delete-event" method = "POST" style="display: none;">
+                <div class = "mb-4">
+                    <label for = "Activity Name" class = "form-label">Activity name</label>
+                    <input type="text" class = "form-control" id = "actName" name = "actName" placeholder = "Math Class">
+                </div>
+                <div class = "mb-4">
+                    <label for = "time" class = "form-label">Start Time and Date</label>
+                    <input type="datetime-local" class = "form-control" id = "timestart" name = "timestart">
+                </div>
+                
+                <button type = "submit" class="btn btn-primary form-control">Submit</button> 
+               
+                
+            </form>
+        </div>
+
+        <div class="col-8">
+            <form id = "aiForm" class = "loginForm my-5" action = "/askAI" method = "POST" style="display: none;">
+                <div class = "mb-4">
+                    <label for = "Chat Input" class = "form-label">AI Input</label>
+                    <input type="textarea" class = "form-control" id = "chatInput" name = "chatInput" placeholder = "How can I further organize my schedule?">
+                </div>
+                
+                <button type = "submit" class="btn btn-primary form-control">Submit</button> 
+            </form>
+        </div>
+    </div>
+        
+    
+
+    
+    
+</div>
+{% endblock %}
