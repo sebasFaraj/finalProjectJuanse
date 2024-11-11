@@ -83,7 +83,7 @@ def delete_event():
 
 @views.route('/askAI', methods = ["POST"])
 def ask_AI():
-    input = request.form.get('chatInput') #Input obtained from the user
+    uInput = request.form.get('chatInput') #Input obtained from the user
 
     formatted_events = [] #Este es el schedule actual
 
@@ -94,17 +94,12 @@ def ask_AI():
         newEvent["end"] = current_user.events[i].dateEnd.isoformat()
         formatted_events.append(newEvent)
 
+    inputEvents = json.dumps(formatted_events)
 
 
-    sysPrompt = formatted_events
+    sysPrompt = "You are a specialist in time management and organization. You will be given a list of Python dictionaries and a Python dictionary. The list of Python dictionaries will represent an already existing schedule, and the single Python dictionary will represent a new event that I want to add to the schedule. Each event has the following categories: “Time” Represents the time of the event. “Activity” represents the name of the event. “Day” represents the day of the event. “Month” represents the month of the event. “Year” represents the year of the event. “Duration” represents how long the event lasts in minutes. “Priority” represents the priority of the event, which ranges from high, medium, and low. “Mobility” indicates if an event can be moved or not. The following is the list of Python dictionaries meant to represent the current schedule. Here is the current schedule:" + inputEvents
 
-    uPrompt = input
-
-
-
-    # Do not go over the 2000 character limit 
-    # The schedule will be given to you as JSON
-    # Your response should be in natural language and less than 2000 characters
+    uPrompt = "You have to give an answer in which information from activities is extracted from the vocabulary. Do not do more than 2000 characters and do not answer questions that are not related to the topic (remember that you jobs is only to be a specialist in time management), try to be concise and write in a natural language ( is for a human to read) and try to write an direct answer and do not show your process of getting that answer. Remember the properties like: “Time” represents the time of the event. “Activity” represents the name of the event. “Day” represents the day of the event. “Month” represents the month of the event. “Year” represents the year of the event. “Duration” represents how long the event lasts in minutes. “Priority” represents the priority of the event, which ranges from high, medium, and low. “Mobility” indicates if an event can be moved or not. Based on this, you can answer the following question provided by the user, which is:" + uInput 
 
     response = llm.generate(create_llama3_prompt(user_prompt=uPrompt, system_prompt=sysPrompt))
 
